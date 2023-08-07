@@ -11,6 +11,7 @@ import (
 
 var DefaultInjector = New()
 
+// getInjectorOrDefault returns the provided injector or the default one.
 func getInjectorOrDefault(i *Injector) *Injector {
 	if i != nil {
 		return i
@@ -53,16 +54,22 @@ func NewWithOpts(opts *InjectorOpts) *Injector {
 }
 
 type Injector struct {
-	mu       sync.RWMutex
+	mu sync.RWMutex
+	// 记录所有的服务，key为服务名称，value为service, ServiceEager 或者 ServiceLazy, ServiceEager直接保存服务实例， ServiceLazy保存实例provider及服务实例（实例在第一次调用时创建）
 	services map[string]any
 
 	// It should be a graph instead of simple ordered list.
+	// todo: orderedInvocation  目的是什么？
 	orderedInvocation      map[string]int // map is faster than slice
 	orderedInvocationIndex int
 
+	// todo: hookAfterRegistration  目的是什么？
 	hookAfterRegistration func(injector *Injector, serviceName string)
-	hookAfterShutdown     func(injector *Injector, serviceName string)
 
+	// todo: hookAfterShutdown  目的是什么？
+	hookAfterShutdown func(injector *Injector, serviceName string)
+
+	// 注册自定义日志函数
 	logf func(format string, args ...any)
 }
 
@@ -216,6 +223,7 @@ func (i *Injector) shutdownImplem(name string) error {
 	return nil
 }
 
+// exists 检查服务是否已注册
 func (i *Injector) exists(name string) bool {
 	i.mu.RLock()
 	defer i.mu.RUnlock()
@@ -232,6 +240,7 @@ func (i *Injector) get(name string) (any, bool) {
 	return s, ok
 }
 
+// set 注册服务, 记录到 Injector.services map中
 func (i *Injector) set(name string, service any) {
 	i.mu.Lock()
 	defer i.mu.Unlock()

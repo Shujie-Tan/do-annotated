@@ -20,6 +20,7 @@ type shutdownableService interface {
 	shutdown() error
 }
 
+// generateServiceName 生成服务名称, 如果是结构体， 则返回结构体类型名称， 如果是接口， 则返回接口类型名称
 func generateServiceName[T any]() string {
 	var t T
 

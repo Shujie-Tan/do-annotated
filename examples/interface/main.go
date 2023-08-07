@@ -13,7 +13,7 @@ func main() {
 	do.ProvideNamedValue(injector, "wheel-3", NewWheel())
 	do.ProvideNamedValue(injector, "wheel-4", NewWheel())
 
-	// provide car: 注意这里虽然Car依赖Engine， 但是可以在注册Engine之前注册Car， 因为do.Injector会自动解析依赖
+	// provide car: 注意这里虽然Car依赖Engine， 但是可以在注册Engine之前注册Car， 但是必须在Car所有依赖都注册之后才能调用MustInvoke[Car]
 	do.Provide(injector, NewCar)
 
 	// provide engine

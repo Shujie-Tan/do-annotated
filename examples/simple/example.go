@@ -35,6 +35,7 @@ func main() {
 	injector := do.New()
 
 	// provide wheels
+	// ProvideNamedValue： 通过该函数直接注册实例（而不是构造函数）， 同时为实例指定一个名称(默认会为服务自动生成一个名称)
 	do.ProvideNamedValue(injector, "wheel-1", &Wheel{})
 	do.ProvideNamedValue(injector, "wheel-2", &Wheel{})
 	do.ProvideNamedValue(injector, "wheel-3", &Wheel{})

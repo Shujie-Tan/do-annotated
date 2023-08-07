@@ -1,5 +1,6 @@
 package do
 
+// ServiceEager 和 ServiceLazy 的区别在于， ServiceEager 在注册时就会创建实例， 而 ServiceLazy 在获取实例时才会创建实例, 所以ServiceEager不需要provider， 也不需要加锁
 type ServiceEager[T any] struct {
 	name     string
 	instance T

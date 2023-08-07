@@ -12,7 +12,7 @@ type ServiceLazy[T any] struct {
 	instance T
 
 	// lazy loading
-	built    bool
+	built    bool // 是否已经创建了实例, 如果已经创建了实例， 则不需要再次创建
 	provider Provider[T]
 }
 
@@ -36,12 +36,14 @@ func (s *ServiceLazy[T]) getInstance(i *Injector) (T, error) {
 	defer s.mu.Unlock()
 
 	if !s.built {
+		// 如果没有创建过实例， 则创建实例
 		err := s.build(i)
 		if err != nil {
 			return empty[T](), err
 		}
 	}
 
+	// 如果已经创建过实例， 则直接返回实例
 	return s.instance, nil
 }
 
@@ -57,6 +59,7 @@ func (s *ServiceLazy[T]) build(i *Injector) (err error) {
 		}
 	}()
 
+	// 调用 provider 方法创建实例
 	instance, err := s.provider(i)
 	if err != nil {
 		return err
